@@ -56,7 +56,7 @@ namespace goruntime{
             {
                 std::unique_lock<std::mutex> lock(mutex_);
                 cv_.wait(lock,[this]{
-                    return stooping_.load(std::memory_order_acquire) && task_queue_.empty();
+                    return stooping_.load(std::memory_order_acquire) || !task_queue_.empty();
                 });
                 if(stooping_.load(std::memory_order_acquire) && task_queue_.empty()){
                     return;
