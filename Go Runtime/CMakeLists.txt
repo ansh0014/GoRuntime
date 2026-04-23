@@ -7,6 +7,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 add_library(goruntime STATIC
     src/runtime/runtime.cpp
+    src/runtime/task_queue.cpp
 )
 
 target_include_directories(goruntime
@@ -25,10 +26,11 @@ enable_testing()
 add_executable(runtime_tests
     tests/unit/runtime_tests.cpp
 )
-
-target_link_libraries(runtime_tests
-    PRIVATE
-        goruntime
-)
-
+target_link_libraries(runtime_tests PRIVATE goruntime)
 add_test(NAME runtime_tests COMMAND runtime_tests)
+
+add_executable(task_queue_tests
+    tests/unit/task_queue_tests.cpp
+)
+target_link_libraries(task_queue_tests PRIVATE goruntime)
+add_test(NAME task_queue_tests COMMAND task_queue_tests)
