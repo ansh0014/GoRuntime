@@ -9,6 +9,7 @@ add_library(goruntime STATIC
     src/runtime/runtime.cpp
     src/runtime/task_queue.cpp
     src/channel/buffered_channel.cpp
+    src/channel/unbuffered_channel.cpp
 )
 
 target_include_directories(goruntime
