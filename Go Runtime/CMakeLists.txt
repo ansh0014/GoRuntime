@@ -8,6 +8,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 add_library(goruntime STATIC
     src/runtime/runtime.cpp
     src/runtime/task_queue.cpp
+    src/channel/buffered_channel.cpp
 )
 
 target_include_directories(goruntime
@@ -34,3 +35,9 @@ add_executable(task_queue_tests
 )
 target_link_libraries(task_queue_tests PRIVATE goruntime)
 add_test(NAME task_queue_tests COMMAND task_queue_tests)
+
+add_executable(channel_tests
+    tests/unit/channel_tests.cpp
+)
+target_link_libraries(channel_tests PRIVATE goruntime)
+add_test(NAME channel_tests COMMAND channel_tests)
