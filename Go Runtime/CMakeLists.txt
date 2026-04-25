@@ -10,6 +10,7 @@ add_library(goruntime STATIC
     src/runtime/task_queue.cpp
     src/channel/buffered_channel.cpp
     src/channel/unbuffered_channel.cpp
+    src/channel/select.cpp
 )
 
 target_include_directories(goruntime
@@ -42,3 +43,9 @@ add_executable(channel_tests
 )
 target_link_libraries(channel_tests PRIVATE goruntime)
 add_test(NAME channel_tests COMMAND channel_tests)
+
+add_executable(select_tests
+    tests/unit/select_tests.cpp
+)
+target_link_libraries(select_tests PRIVATE goruntime)
+add_test(NAME select_tests COMMAND select_tests)

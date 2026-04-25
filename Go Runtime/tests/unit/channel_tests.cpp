@@ -23,7 +23,6 @@ int test_buffered_send_then_recv() {
 
   return 0;
 }
-
 int test_buffered_close_rejects_send() {
   goruntime::BufferedChannel<int> ch(1);
   ch.close();
@@ -35,7 +34,6 @@ int test_buffered_close_rejects_send() {
 
   return 0;
 }
-
 int test_unbuffered_send_recv() {
   goruntime::UnbufferedChannel<int> ch;
   std::atomic<bool> ok{false};
