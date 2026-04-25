@@ -55,3 +55,25 @@ add_executable(e2e_tests
 )
 target_link_libraries(e2e_tests PRIVATE goruntime)
 add_test(NAME e2e_tests COMMAND e2e_tests)
+
+add_executable(scheduler_stress_tests
+    tests/stress/scheduler_stree.cpp
+)
+target_link_libraries(scheduler_stress_tests PRIVATE goruntime)
+add_test(NAME scheduler_stress_tests COMMAND scheduler_stress_tests)
+
+add_executable(channel_stress_tests
+    tests/stress/channel_stress.cpp
+)
+target_link_libraries(channel_stress_tests PRIVATE goruntime)
+add_test(NAME channel_stress_tests COMMAND channel_stress_tests)
+
+add_executable(scheduler_bench
+    benchmarks/scheduler_bench.cpp
+)
+target_link_libraries(scheduler_bench PRIVATE goruntime)
+
+add_executable(channel_bench
+    benchmarks/channel_bench.cpp
+)
+target_link_libraries(channel_bench PRIVATE goruntime)
