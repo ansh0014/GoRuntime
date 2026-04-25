@@ -5,7 +5,7 @@
 #include <thread>
 #include <vector>
 namespace goruntime {
-enum class SelectRecvState { Value, NoneReady, AllClosed };
+enum class SelectRecvState { Value, NoneReady, AllClosed, Timeout };
 template <typename Channel, typename T>
 SelectRecvState select_recv(const std::vector<Channel *> &channels,
                             std::size_t &cursor, std::size_t &select_index,
@@ -35,8 +35,8 @@ SelectRecvState select_recv(const std::vector<Channel *> &channels,
 template <typename Channel, typename T>
 SelectRecvState select_recv_blocking(
     const std::vector<Channel *> &channels, std::size_t &cursor,
-    std::size_t &select_index,
-    T &out, std::chrono::milliseconds poly_delay = std::chrono::milliseconds(1)) {
+    std::size_t &select_index, T &out,
+    std::chrono::milliseconds poly_delay = std::chrono::milliseconds(1)) {
   while (true) {
     const SelectRecvState state =
         select_recv(channels, cursor, select_index, out);
@@ -44,6 +44,28 @@ SelectRecvState select_recv_blocking(
       return state;
     }
     std::this_thread::sleep_for(poly_delay);
+  }
+}
+template <typename Channel, typename T>
+SelectRecvState select_recv_for(
+    const std::vector<Channel *> &channels, std::size_t &cursor,
+    std::size_t &select_index, T &out, std::chrono::milliseconds timeout,
+    std::chrono::milliseconds poll_delay = std::chrono::milliseconds(1)) {
+  const auto deadline = std::chrono::steady_clock::now() + timeout;
+
+  while (true) {
+    const SelectRecvState state =
+        select_recv(channels, cursor, select_index, out);
+    if (state == SelectRecvState::Value ||
+        state == SelectRecvState::AllClosed) {
+      return state;
+    }
+
+    if (std::chrono::steady_clock::now() >= deadline) {
+      return SelectRecvState::Timeout;
+    }
+
+    std::this_thread::sleep_for(poll_delay);
   }
 }
 } // namespace goruntime

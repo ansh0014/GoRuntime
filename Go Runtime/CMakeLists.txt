@@ -49,3 +49,9 @@ add_executable(select_tests
 )
 target_link_libraries(select_tests PRIVATE goruntime)
 add_test(NAME select_tests COMMAND select_tests)
+
+add_executable(e2e_tests
+    tests/integration/E2E.cpp
+)
+target_link_libraries(e2e_tests PRIVATE goruntime)
+add_test(NAME e2e_tests COMMAND e2e_tests)
