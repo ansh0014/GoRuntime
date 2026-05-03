@@ -72,12 +72,13 @@ throughput_msgs_per_sec=2183453
 ![alt text](<Screenshot 2026-05-03 154513.png>)
 
 ### Scripts
-
+```powershell
 powershell -ExecutionPolicy Bypass -File "scripts/test.ps1" -Config Debug
 powershell -ExecutionPolicy Bypass -File "scripts/test.ps1" -Config Release
 powershell -ExecutionPolicy Bypass -File "scripts/bench.ps1"
 powershell -ExecutionPolicy Bypass -File "scripts/lint.ps1" -Config Debug
 powershell -ExecutionPolicy Bypass -File "scripts/format.ps1"
+```
 
-Status
+### Status
 All core features implemented and verified with unit, integration, stress, and benchmark runs.
