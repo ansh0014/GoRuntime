@@ -28,7 +28,8 @@ void Runtime::submit(Task task) {
 
 void Runtime::shutdown() {
   bool expected = false;
-  if (!stopping_.compare_exchange_strong(expected, true,   std::memory_order_acq_rel)) {
+  if (!stopping_.compare_exchange_strong(expected, true,
+                                         std::memory_order_acq_rel)) {
     return;
   }
   task_queue_.shutdown();
@@ -52,4 +53,4 @@ void Runtime::worker_loop() {
     }
   }
 }
-} 
+} // namespace goruntime

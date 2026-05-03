@@ -28,4 +28,4 @@ private:
   TaskQueue task_queue_;
   std::atomic<bool> stopping_{false};
 };
-} 
+} // namespace goruntime

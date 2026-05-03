@@ -43,7 +43,7 @@ int test_shutdown_unblocks_wait() {
   return 0;
 }
 
-} 
+} // namespace
 
 int main() {
   int failures = 0;

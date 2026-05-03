@@ -1,5 +1,5 @@
 #pragma once
-#include<functional>
-namespace goruntime{
-    using Task=std::function<void()>;
+#include <functional>
+namespace goruntime {
+using Task = std::function<void()>;
 }

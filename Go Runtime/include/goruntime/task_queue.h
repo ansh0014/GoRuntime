@@ -11,19 +11,19 @@ namespace goruntime {
 
 class TaskQueue {
 public:
-    void push(Task task);
-    bool pop(Task& out);
-    bool wait_pop(Task& out);
-    void shutdown();
+  void push(Task task);
+  bool pop(Task &out);
+  bool wait_pop(Task &out);
+  void shutdown();
 
-    std::size_t size() const;
-    bool empty() const;
+  std::size_t size() const;
+  bool empty() const;
 
 private:
-    mutable std::mutex mutex_;
-    std::condition_variable cv_;
-    std::queue<Task> queue_;
-    bool closed_{false};
+  mutable std::mutex mutex_;
+  std::condition_variable cv_;
+  std::queue<Task> queue_;
+  bool closed_{false};
 };
 
-} 
+} // namespace goruntime

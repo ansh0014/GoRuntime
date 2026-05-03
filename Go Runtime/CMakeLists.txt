@@ -11,6 +11,9 @@ add_library(goruntime STATIC
     src/channel/buffered_channel.cpp
     src/channel/unbuffered_channel.cpp
     src/channel/select.cpp
+    src/core/errror.cpp
+    src/core/metrics.cpp
+    src/core/shutdown.cpp
 )
 
 target_include_directories(goruntime
@@ -77,3 +80,7 @@ add_executable(channel_bench
     benchmarks/channel_bench.cpp
 )
 target_link_libraries(channel_bench PRIVATE goruntime)
+
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+include(CompilerWarnings)
+include(Sanitizers)

@@ -49,4 +49,4 @@ bool TaskQueue::empty() const {
   std::lock_guard<std::mutex> lock(mutex_);
   return queue_.empty();
 }
-}
+} // namespace goruntime
