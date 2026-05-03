@@ -1,56 +1,41 @@
+#pragma once
+
+#include <atomic>
+#include <cstddef>
+#include <thread>
+#include <vector>
+
+#include "goruntime/config.h"
+#include "goruntime/task.h"
+#include "goruntime/task_queue.h"
 #include "goruntime/runtime.h"
 
 #include <stdexcept>
 
 namespace goruntime {
 
-Runtime::Runtime(std::size_t worker_count) {
-  if (worker_count == 0) {
-    worker_count = std::thread::hardware_concurrency();
-    if (worker_count == 0) {
-      worker_count = 4;
-    }
-  }
-  workers_.reserve(worker_count);
-  for (std::size_t i = 0; i < worker_count; ++i) {
-    workers_.emplace_back([this] { worker_loop(); });
-  }
-}
+class Runtime {
+public:
+    explicit Runtime(std::size_t worker_count = 0);
+    explicit Runtime(const RuntimeConfig& config);
+    ~Runtime();
 
-Runtime::~Runtime() { shutdown(); }
+    Runtime(const Runtime&) = delete;
+    Runtime& operator=(const Runtime&) = delete;
 
-void Runtime::submit(Task task) {
-  if (stopping_.load(std::memory_order_acquire)) {
-    throw std::runtime_error("Runtime is stopping, cannot submit new tasks");
-  }
-  task_queue_.push(std::move(task));
-}
+    void submit(Task task);
+    void shutdown();
 
-void Runtime::shutdown() {
-  bool expected = false;
-  if (!stopping_.compare_exchange_strong(expected, true,
-                                         std::memory_order_acq_rel)) {
-    return;
-  }
-  task_queue_.shutdown();
-  for (auto &worker : workers_) {
-    if (worker.joinable()) {
-      worker.join();
-    }
-  }
-}
-std::size_t Runtime::worker_count() const noexcept { return workers_.size(); }
-std::size_t Runtime::pending_tasks() const { return task_queue_.size(); }
-void Runtime::worker_loop() {
-  while (true) {
-    Task task;
-    if (!task_queue_.wait_pop(task)) {
-      return;
-    }
-    try {
-      task();
-    } catch (...) {
-    }
-  }
-}
+    std::size_t worker_count() const noexcept;
+    std::size_t pending_tasks() const;
+
+private:
+    void start_workers(std::size_t worker_count);
+    void worker_loop();
+
+    std::vector<std::thread> workers_;
+    TaskQueue task_queue_;
+    std::atomic<bool> stopping_{false};
+};
+
 } // namespace goruntime

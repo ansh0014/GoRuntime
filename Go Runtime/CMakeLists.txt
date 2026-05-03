@@ -7,6 +7,8 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 add_library(goruntime STATIC
     src/runtime/runtime.cpp
+    src/runtime/scheduler.cpp
+    src/runtime/worker.cpp
     src/runtime/task_queue.cpp
     src/channel/buffered_channel.cpp
     src/channel/unbuffered_channel.cpp
