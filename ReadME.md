@@ -50,12 +50,12 @@ ctest --test-dir build --output-on-failure
 ```
 
 #### Stress
-
+```powershell
 for ($i=1; $i -le 10; $i++) {
   Write-Host "Stress run $i"
   ctest --test-dir build -C Debug -R stress --output-on-failure
 }
-
+```
 ### Benchmarks
 ## Scheduler
 workers=8, tasks=500000
