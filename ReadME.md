@@ -1,50 +1,83 @@
 # Go Runtime in C++
 
-A production-oriented learning project that recreates core ideas from Go concurrency in C++.
+A production-oriented, educational runtime that recreates core concurrency ideas from Go in modern C++.
+It provides a task scheduler, buffered and unbuffered channels, and a select mechanism with timeouts.
 
-## What This Project Builds
-- Lightweight task execution model (goroutine-like tasks)
-- Thread-pool scheduler (runtime-managed execution)
+## What This Is
+- A small runtime that executes user tasks over a fixed worker pool.
+- A channel system for safe inter-task communication.
+- A learning-first but production-grade implementation with tests, stress tests, and benchmarks.
+
+## What This Is Not
+- A full Go runtime replacement.
+- A work-stealing scheduler, GC, or preemptive scheduling system.
+- A goroutine stack model with dynamic growth.
+
+## Similarities to Go Runtime
+- Goroutine-like tasks executed by a runtime scheduler.
+- Channels with buffered and unbuffered semantics.
+- Select across multiple channels with timeout support.
+- Deterministic shutdown behavior.
+
+## Differences from Go Runtime
+- Uses OS threads directly (no goroutine stacks).
+- No garbage collector or runtime-managed memory.
+- No P/M/G scheduler architecture or work stealing.
+- Select is polling-based rather than fully blocking.
+
+## Features
+- Fixed-size worker pool scheduler
+- Thread-safe task queue
 - Buffered and unbuffered channels
-- Select-style multi-channel waiting
-- Deterministic shutdown and lifecycle handling
+- Select with timeout support
+- Unit, integration, and stress tests
+- Benchmarks and automation scripts
 
-## Why This Exists
-Go provides goroutines, scheduling, and channels natively.  
-C++ gives low-level building blocks, but these abstractions must be built manually.  
-This project helps you deeply understand runtime internals by implementing them directly.
+## Build and Test
 
-## Current Repository Layout
-- Go Runtime/
-- Go Runtime/include/goruntime
-- Go Runtime/src/runtime
-- Go Runtime/src/channel
-- Go Runtime/src/core
-- Go Runtime/tests/unit
-- Go Runtime/tests/integration
-- Go Runtime/tests/stress
-- Go Runtime/benchmarks
-- Go Runtime/docs
-- Go Runtime/scripts
-
-## Planned Feature Set
-1. Runtime + scheduler + worker pool
-2. Thread-safe task queue
-3. Buffered channel
-4. Unbuffered channel
-5. Non-blocking operations and select
-6. Metrics and diagnostic hooks
-7. Stress testing and benchmarking
-
-## Engineering Standards
-- Correctness first, then optimization
-- No data races in sanitizer runs
-- Predictable shutdown behavior
-- Explicit synchronization boundaries
-- Tests for core concurrency paths
-
-## Build (Planned CMake Flow)
+### Debug
 ```powershell
-cmake -S "Go Runtime" -B "Go Runtime/build"
-cmake --build "Go Runtime/build" --config Release
-ctest --test-dir "Go Runtime/build" --output-on-failure
+cmake -S . -B build
+cmake --build build --config Debug
+ctest --test-dir build -C Debug --output-on-failure
+```
+
+### Release
+```powershell
+cmake -S . -B build
+cmake --build build --config Release
+ctest --test-dir build --output-on-failure
+```
+
+#### Stress
+
+for ($i=1; $i -le 10; $i++) {
+  Write-Host "Stress run $i"
+  ctest --test-dir build -C Debug -R stress --output-on-failure
+}
+
+### Benchmarks
+## Scheduler
+workers=8, tasks=500000
+time_us=1133741
+throughput_tasks_per_sec=441017
+
+## Channel
+
+capacity=1024, producers=4, per_producer=200000
+messages=800000, sum=80001600000
+time_us=366392
+throughput_msgs_per_sec=2183453
+
+![alt text](<Screenshot 2026-05-03 154513.png>)
+
+### Scripts
+
+powershell -ExecutionPolicy Bypass -File "scripts/test.ps1" -Config Debug
+powershell -ExecutionPolicy Bypass -File "scripts/test.ps1" -Config Release
+powershell -ExecutionPolicy Bypass -File "scripts/bench.ps1"
+powershell -ExecutionPolicy Bypass -File "scripts/lint.ps1" -Config Debug
+powershell -ExecutionPolicy Bypass -File "scripts/format.ps1"
+
+Status
+All core features implemented and verified with unit, integration, stress, and benchmark runs.
